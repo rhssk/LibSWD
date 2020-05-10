@@ -89,6 +89,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdarg.h>
 #include <string.h>
 #include <math.h>
@@ -451,13 +452,13 @@
 
 /** Payload for commands that will not change, transmitted MSBFirst */
 /// SW-DP Reset sequence.
-static const char LIBSWD_CMD_SWDPRESET[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00};
+static const uint8_t LIBSWD_CMD_SWDPRESET[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00};
 /// Switches DAP from JTAG to SWD.
-static const char LIBSWD_CMD_JTAG2SWD[]  = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x9e, 0xe7};
+static const uint8_t LIBSWD_CMD_JTAG2SWD[]  = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x9e, 0xe7};
 /// Switches DAP from SWD to JTAG.
-static const char LIBSWD_CMD_SWD2JTAG[]  = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x3c, 0xe7};
+static const uint8_t LIBSWD_CMD_SWD2JTAG[]  = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x3c, 0xe7};
 /// Inserts idle clocks for proper data processing.
-static const char LIBSWD_CMD_IDLE[] = {0x00};
+static const uint8_t LIBSWD_CMD_IDLE[] = {0x00};
 
 /** Status and Error Codes definitions */
 /// Error Codes definition, use this to have its name on debugger.
@@ -691,63 +692,63 @@ typedef struct {
 #define LIBSWD_ARM_REGISTER_NAME_MAXLEN 32
 
 typedef struct libswd_arm_romtable_register {
- int address;
+ uint32_t address;
  char name[LIBSWD_ARM_REGISTER_NAME_MAXLEN];
- int default_value;
+ uint32_t default_value;
  int value;
  struct libswd_arm_romtable_register *next;
 } libswd_arm_register_t;
 
 static const libswd_arm_register_t libswd_arm_debug_CortexM3_ROMtable_PeripheralID[] = {
- { .address=0xE00FFFD0, .name="Peripheral ID4", .default_value=0x00000004 },
- { .address=0xE00FFFD4, .name="Peripheral ID5", .default_value=0x00000000 },
- { .address=0xE00FFFD8, .name="Peripheral ID6", .default_value=0x00000000 },
- { .address=0xE00FFFDC, .name="Peripheral ID7", .default_value=0x00000000 },
- { .address=0xE00FFFE0, .name="Peripheral ID0", .default_value=0x000000C3 },
- { .address=0xE00FFFE4, .name="Peripheral ID1", .default_value=0x000000B4 },
- { .address=0xE00FFFE8, .name="Peripheral ID2", .default_value=0x0000000B },
- { .address=0xE00FFFEC, .name="Peripheral ID3", .default_value=0x00000000 },
+ { 0xE00FFFD0, "Peripheral ID4", 0x00000004 },
+ { 0xE00FFFD4, "Peripheral ID5", 0x00000000 },
+ { 0xE00FFFD8, "Peripheral ID6", 0x00000000 },
+ { 0xE00FFFDC, "Peripheral ID7", 0x00000000 },
+ { 0xE00FFFE0, "Peripheral ID0", 0x000000C3 },
+ { 0xE00FFFE4, "Peripheral ID1", 0x000000B4 },
+ { 0xE00FFFE8, "Peripheral ID2", 0x0000000B },
+ { 0xE00FFFEC, "Peripheral ID3", 0x00000000 },
 };
 
 static const libswd_arm_register_t libswd_arm_debug_CortexM3_ROMtable_ComponentID[] = {
- { .address=0xE00FFFF0, .name="Component ID0", .default_value=0x0000000D },
- { .address=0xE00FFFF4, .name="Component ID1", .default_value=0x00000010 },
- { .address=0xE00FFFF8, .name="Component ID2", .default_value=0x00000005 },
- { .address=0xE00FFFFC, .name="Component ID3", .default_value=0x000000B1 },
+ { 0xE00FFFF0, "Component ID0", 0x0000000D },
+ { 0xE00FFFF4, "Component ID1", 0x00000010 },
+ { 0xE00FFFF8, "Component ID2", 0x00000005 },
+ { 0xE00FFFFC, "Component ID3", 0x000000B1 },
 };
 
 static const libswd_arm_register_t libswd_arm_debug_CortexM3_Components[] = {
- { .address=0xE00FF000, .name="SCS", .default_value=0xFFF0F003 },
- { .address=0xE00FF004, .name="DWT", .default_value=0xFFF02003 },
- { .address=0xE00FF008, .name="FPB", .default_value=0xFFF03003 },
- { .address=0xE00FF00C, .name="ITM", .default_value=0xFFF01003 },
- { .address=0xE00FF010, .name="TPIU", .default_value=0xFFF41003 },
- { .address=0xE00FF014, .name="ETM", .default_value=0xFFF42003 },
- { .address=0xE00FF018, .name="End marker", .default_value=0x00000000 },
- { .address=0xE00FFFCC, .name="SYSTEM ACCESS", .default_value=0x00000001 },
+ { 0xE00FF000, "SCS", 0xFFF0F003 },
+ { 0xE00FF004, "DWT", 0xFFF02003 },
+ { 0xE00FF008, "FPB", 0xFFF03003 },
+ { 0xE00FF00C, "ITM", 0xFFF01003 },
+ { 0xE00FF010, "TPIU", 0xFFF41003 },
+ { 0xE00FF014, "ETM", 0xFFF42003 },
+ { 0xE00FF018, "End marker", 0x00000000 },
+ { 0xE00FFFCC, "SYSTEM ACCESS", 0x00000001 },
 };
 
 static const libswd_arm_register_t libswd_arm_debug_CortexM3_SCS_PeripheralID[] = {
- { .address=0xE000EFD0, .name="Peripheral ID4", .default_value=0x00000004 },
- { .address=0xE000EFE0, .name="Peripheral ID0", .default_value=0x00000000 },
- { .address=0xE000EFE4, .name="Peripheral ID1", .default_value=0x000000B0 },
- { .address=0xE000EFE8, .name="Peripheral ID2", .default_value=0x0000000B },
- { .address=0xE000EFEC, .name="Peripheral ID3", .default_value=0x00000000 },
+ { 0xE000EFD0, "Peripheral ID4", 0x00000004 },
+ { 0xE000EFE0, "Peripheral ID0", 0x00000000 },
+ { 0xE000EFE4, "Peripheral ID1", 0x000000B0 },
+ { 0xE000EFE8, "Peripheral ID2", 0x0000000B },
+ { 0xE000EFEC, "Peripheral ID3", 0x00000000 },
 };
 
 static const libswd_arm_register_t libswd_arm_debug_CortexM3_SCS_ComponentID[] = {
- { .address=0xE000EFF0, .name="Component ID0", .default_value=0x0000000D },
- { .address=0xE000EFF4, .name="Component ID1", .default_value=0x000000E0 },
- { .address=0xE000EFF8, .name="Component ID2", .default_value=0x00000005 },
- { .address=0xE000EFFC, .name="Component ID3", .default_value=0x000000B1 },
+ { 0xE000EFF0, "Component ID0", 0x0000000D },
+ { 0xE000EFF4, "Component ID1", 0x000000E0 },
+ { 0xE000EFF8, "Component ID2", 0x00000005 },
+ { 0xE000EFFC, "Component ID3", 0x000000B1 },
 };
 
 static const libswd_arm_register_t libswd_arm_debug_CPUID[] = {
- { .name="ARM Cortex-M3 r1p2",     .default_value=0x411FC231 },
- { .name="ARM Cortex-M3 r2p1",     .default_value=0x412FC231 },
- { .name="ARM Cortex-M0 r0p0",     .default_value=0x410CC200 },
- { .name="ARM Cortex-M0+ r0p0",    .default_value=0x410CC600 },
- { .name="ARM Cortex-M4 r0p1",     .default_value=0x410FC241 },
+ { 0x00000000, "ARM Cortex-M3 r1p2", 0x411FC231 },
+ { 0x00000000, "ARM Cortex-M3 r2p1", 0x412FC231 },
+ { 0x00000000, "ARM Cortex-M0 r0p0", 0x410CC200 },
+ { 0x00000000, "ARM Cortex-M0+ r0p0", 0x410CC600 },
+ { 0x00000000, "ARM Cortex-M4 r0p1", 0x410FC241 },
 };
 
 #define LIBSWD_NUM_SUPPORTED_CPUIDS     (sizeof(libswd_arm_debug_CPUID) / sizeof(libswd_arm_debug_CPUID[0]))

@@ -5,12 +5,20 @@ os:
 addons:
   apt:
     packages:
-    - libftdi-dev
+      - python3-pip
+      - python3-dev
+      - ninja-build
+      - libftdi-dev
 compiler:
   - gcc
   - clang
-env:
-  - 
-  - CONFIG_OPTS=--enable-application
+before_install:
+  - sudo pip3 install --upgrade pip
+  - sudo pip3 install setuptools
+  - sudo pip3 install 'meson==0.52'
 install: if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libftdi; fi
-script: ./autogen.sh && ./configure $CONFIG_OPTS && make
+script:
+  - meson build
+  - cd build
+  - meson configure -Dapplication=true
+  - ninja
